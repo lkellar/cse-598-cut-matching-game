@@ -38,8 +38,9 @@ def generate():
     
     output = ''
     for key in sorted(adjacencyList.keys()):
-        output += ','.join(adjacencyList[key])
-        output += '\n'
+        # output all edges as capacity 1 for now
+        output += ',1,'.join(adjacencyList[key])
+        output += ',1\n'
 
     with open(args.output, 'w') as f:
         f.write(output)

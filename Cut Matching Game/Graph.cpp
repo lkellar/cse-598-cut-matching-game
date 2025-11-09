@@ -19,10 +19,19 @@ Graph::Graph(int nodes, std::stringstream& buffer) {
     int index = 0;
     while (std::getline(buffer, line)) {
         std::istringstream linebuf(line);
-        std::vector<int> neighbors;
+        std::vector<Edge> neighbors;
         std::string segment;
+        
         while (std::getline(linebuf, segment, ',')) {
-            neighbors.push_back(std::stoi(segment));
+            int to = std::stoi(segment);
+            
+            if (!std::getline(linebuf, segment, ',')) {
+                std::cerr << "Found incomplete adjacency list on line " << index << "; found an neighbor with no weight\n";
+                break;
+            }
+            int weight = std::stoi(segment);
+            
+            neighbors.push_back(Edge(to, weight));
         }
         
         this->adjacencyList[index] = neighbors;
@@ -34,18 +43,18 @@ Graph::Graph(int nodes, std::stringstream& buffer) {
     }
 }
 
-Graph::Graph(std::vector<std::vector<int>>&& adjacencyList) {
+Graph::Graph(std::vector<std::vector<Edge>>&& adjacencyList) {
     this->adjacencyList = adjacencyList;
 }
 
 
-SubdivisionGraph::SubdivisionGraph(std::vector<std::vector<int>>&& adjacencyList, int firstSplitNode) : Graph(std::move(adjacencyList)), firstSplitNode(firstSplitNode) { }
+SubdivisionGraph::SubdivisionGraph(std::vector<std::vector<Edge>>&& adjacencyList, int firstSplitNode) : Graph(std::move(adjacencyList)), firstSplitNode(firstSplitNode) { }
 
 
 SubdivisionGraph Graph::createSubdivisionGraph() const {
     // create new adjacency list for subdivided graph
     // TODO: could do more to reserve space in this list (since we know the sizes ahead of time)
-    std::vector<std::vector<int>> subdividedList;
+    std::vector<std::vector<Edge>> subdividedList;
     int originalNodeCount = static_cast<int>(this->adjacencyList.size());
     int nextNodeId = originalNodeCount;
     
@@ -53,7 +62,9 @@ SubdivisionGraph Graph::createSubdivisionGraph() const {
     subdividedList.resize(this->adjacencyList.size());
     
     for (int u = 0; u < this->adjacencyList.size(); u++) {
-        for (int v : this->adjacencyList[u]) {
+        for (Edge edge : this->adjacencyList[u]) {
+            int v = edge.to_vertex;
+            int weight = edge.weight;
             // when we add the new node, we'll add both edges at once (so we label the new node once)
             // so we'll decide to do this when u < v
             if (v > u) {
@@ -61,15 +72,15 @@ SubdivisionGraph Graph::createSubdivisionGraph() const {
             }
             int nextNode = nextNodeId;
 
-            subdividedList[u].push_back(nextNode);
+            subdividedList[u].push_back(Edge(nextNode, weight));
             
             assert(subdividedList.size() == nextNodeId);
-            subdividedList.push_back({u});
+            subdividedList.push_back({Edge(u, weight)});
             
             // if u,v is not a subloop
             if (u != v) {
-                subdividedList[v].push_back(nextNode);
-                subdividedList[nextNode].push_back(v);
+                subdividedList[v].push_back(Edge(nextNode, weight));
+                subdividedList[nextNode].push_back(Edge(v, weight));
             }
             
             nextNodeId++;
@@ -82,8 +93,8 @@ SubdivisionGraph Graph::createSubdivisionGraph() const {
 void Graph::display() const {
     for (size_t index = 0; index < this->adjacencyList.size(); index++) {
         std::cout << index << ": ";
-        for (int neighbor : this->adjacencyList[index]) {
-            std::cout << neighbor << " ";
+        for (Edge neighbor : this->adjacencyList[index]) {
+            std::cout << "(" << neighbor.to_vertex << "," << neighbor.weight << ") ";
         }
         std::cout << "\n";
     }
@@ -92,19 +103,19 @@ void Graph::display() const {
 void Graph::displayDOT() const {
     std::cout << "graph {\n";
     for (size_t index = 0; index < this->adjacencyList.size(); index++) {
-        for (int neighbor : this->adjacencyList[index]) {
+        for (Edge neighbor : this->adjacencyList[index]) {
             // since we're working with undirected graphs, only output each edge once
-            if (index > neighbor) {
+            if (index > neighbor.to_vertex) {
                 continue;
             }
-            std::cout << index << " -- " << neighbor << "\n";
+            std::cout << index << " -- " << neighbor.to_vertex << " [weight=" << neighbor.weight << "]\n";
         }
     }
     std::cout << "}\n";
 }
 
 Graph Graph::getInducedGraph(const Subset& subset) const {
-    std::vector<std::vector<int>> inducedAdjacencyList;
+    std::vector<std::vector<Edge>> inducedAdjacencyList;
     
     inducedAdjacencyList.resize(subset.size());
     
@@ -121,10 +132,10 @@ Graph Graph::getInducedGraph(const Subset& subset) const {
         int newNodeLabel = newEdgeMapping[node];
         assert(newNodeLabel != -1);
         
-        for (int neighbor : this->adjacencyList[node]) {
-            int newNeighborLabel = newEdgeMapping[neighbor];
+        for (Edge neighbor : this->adjacencyList[node]) {
+            int newNeighborLabel = newEdgeMapping[neighbor.to_vertex];
             if (newNeighborLabel != -1) {
-                inducedAdjacencyList[newNodeLabel].push_back(newNeighborLabel);
+                inducedAdjacencyList[newNodeLabel].push_back(Edge(newNeighborLabel, neighbor.weight));
             }
         }
     }

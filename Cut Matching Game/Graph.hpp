@@ -18,11 +18,17 @@ class SubdivisionGraph;
 using Matching = std::vector<std::pair<int, int>>;
 using Subset = std::vector<int>;
 
+struct Edge {
+    int to_vertex;
+    int weight;
+};
+
 // Assumes edges are unit capacity
 class Graph {
 public:
+    // accepts a buffer of an adjacency list, where each line is neighbor,weight,neighbor,weight and so on
     Graph(int nodes, std::stringstream& buffer);
-    explicit Graph(std::vector<std::vector<int>>&& adjacencyList);
+    explicit Graph(std::vector<std::vector<Edge>>&& adjacencyList);
     // Creates a graph where each edge (u,v) is split into two edges joined by a new node w, resulting in (u,w) and (w,v)
     SubdivisionGraph createSubdivisionGraph() const;
     // generate new graph only containing nodes from the subset
@@ -31,12 +37,12 @@ public:
     // output in graphviz DOT format
     void displayDOT() const;
 private:
-    std::vector<std::vector<int>> adjacencyList;
+    std::vector<std::vector<Edge>> adjacencyList;
 };
 
 class SubdivisionGraph : public Graph {
 public:
-    SubdivisionGraph(std::vector<std::vector<int>>&& adjacencyList, int firstSplitNode);
+    SubdivisionGraph(std::vector<std::vector<Edge>>&& adjacencyList, int firstSplitNode);
 private:
     // index in the adjacency list of the first split node
     // e.g. if fsn is n; all 0...n-1 are normal nodes and n... are split nodes

@@ -33,9 +33,9 @@ int main(int argc, const char * argv[]) {
     }
     file.close();
     
-    std::cout << "Oriiginal Graph\n";
+    std::cout << "Original Graph\n";
     Graph graph(nodes, fileBuffer);
-    graph.displayDOT();
+    graph.display();
     /*std::cout << "Subdivision\n";
     Graph subdivision = graph.createSubdivisionGraph();
     subdivision.displayDOT();*/
@@ -46,7 +46,7 @@ int main(int argc, const char * argv[]) {
     std::cout << "Cut\n";
     
     Graph induced = graph.getInducedGraph(cut);
-    induced.displayDOT();
+    induced.display();
     
     
     return EXIT_SUCCESS;
