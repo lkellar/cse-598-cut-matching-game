@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 
 Graph::Graph(int nodes, std::stringstream& buffer) {
     this->adjacencyList.resize(nodes);
@@ -37,11 +38,16 @@ Graph::Graph(std::vector<std::vector<int>>&& adjacencyList) {
     this->adjacencyList = adjacencyList;
 }
 
-Graph Graph::createSubdivisionGraph() const {
+
+SubdivisionGraph::SubdivisionGraph(std::vector<std::vector<int>>&& adjacencyList, int firstSplitNode) : Graph(std::move(adjacencyList)), firstSplitNode(firstSplitNode) { }
+
+
+SubdivisionGraph Graph::createSubdivisionGraph() const {
     // create new adjacency list for subdivided graph
     // TODO: could do more to reserve space in this list (since we know the sizes ahead of time)
     std::vector<std::vector<int>> subdividedList;
-    int nextNodeId = static_cast<int>(this->adjacencyList.size());
+    int originalNodeCount = static_cast<int>(this->adjacencyList.size());
+    int nextNodeId = originalNodeCount;
     
     // could easily do this more accurately with the amount of existing nodes and new nodes we'll have
     subdividedList.resize(this->adjacencyList.size());
@@ -70,7 +76,7 @@ Graph Graph::createSubdivisionGraph() const {
         }
     }
     
-    return Graph(std::move(subdividedList));
+    return SubdivisionGraph(std::move(subdividedList), originalNodeCount);
 }
 
 void Graph::display() const {
@@ -96,3 +102,33 @@ void Graph::displayDOT() const {
     }
     std::cout << "}\n";
 }
+
+Graph Graph::getInducedGraph(const Subset& subset) const {
+    std::vector<std::vector<int>> inducedAdjacencyList;
+    
+    inducedAdjacencyList.resize(subset.size());
+    
+    // create a vector of old index -> new index. nodes not present in induced subgraph get -1
+    std::vector<int> newEdgeMapping(this->adjacencyList.size(), -1);
+    
+    int nextIndex = 0;
+    for (int node : subset) {
+        newEdgeMapping[node] = nextIndex;
+        nextIndex++;
+    }
+    
+    for (int node : subset) {
+        int newNodeLabel = newEdgeMapping[node];
+        assert(newNodeLabel != -1);
+        
+        for (int neighbor : this->adjacencyList[node]) {
+            int newNeighborLabel = newEdgeMapping[neighbor];
+            if (newNeighborLabel != -1) {
+                inducedAdjacencyList[newNodeLabel].push_back(newNeighborLabel);
+            }
+        }
+    }
+    
+    return Graph(std::move(inducedAdjacencyList));
+}
+

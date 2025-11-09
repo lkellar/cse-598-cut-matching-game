@@ -7,8 +7,12 @@
 
 #include <iostream>
 #include "Graph.hpp"
+#include "Game.hpp"
 #include <fstream>
 #include <sstream>
+
+
+#include <random>
 
 int main(int argc, const char * argv[]) {
     if (argc != 3) {
@@ -29,11 +33,21 @@ int main(int argc, const char * argv[]) {
     }
     file.close();
     
+    std::cout << "Oriiginal Graph\n";
     Graph graph(nodes, fileBuffer);
     graph.displayDOT();
-    std::cout << "Subdivision\n";
+    /*std::cout << "Subdivision\n";
     Graph subdivision = graph.createSubdivisionGraph();
-    subdivision.displayDOT();
+    subdivision.displayDOT();*/
+    
+    Game game(nodes);
+    Subset cut = game.generateCut();
+    
+    std::cout << "Cut\n";
+    
+    Graph induced = graph.getInducedGraph(cut);
+    induced.displayDOT();
+    
     
     return EXIT_SUCCESS;
 }
