@@ -55,6 +55,14 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "4 tiny.txt"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = ""
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "6 max_flow_test.txt"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

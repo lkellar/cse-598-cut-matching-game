@@ -11,6 +11,8 @@
 #include <iostream>
 #include <cassert>
 #include <algorithm>
+#include <queue>
+#include <limits>
 
 Graph::Graph(int nodes, std::stringstream& buffer) {
     this->adjacencyList.resize(nodes);
@@ -43,25 +45,30 @@ Graph::Graph(int nodes, std::stringstream& buffer) {
     }
 }
 
+int Graph::nodeCount() const {
+    return static_cast<int>(this->adjacencyList.size());
+}
+
+
+void Graph::addUndirectedEdge(int u, int v, int weight) {
+    assert(this->nodeCount() > u);
+    assert(this->nodeCount() > v);
+    this->adjacencyList[u].push_back(Edge(v, weight));
+    this->adjacencyList[v].push_back(Edge(u, weight));
+}
+
+int Graph::createNode(std::vector<Edge> edges) {
+    int nextNodeId = this->nodeCount();
+    this->adjacencyList.push_back(edges);
+    return nextNodeId;
+}
+
 Graph::Graph(std::vector<std::vector<Edge>>&& adjacencyList) {
     this->adjacencyList = adjacencyList;
 }
 
-
-SubdivisionGraph::SubdivisionGraph(std::vector<std::vector<Edge>>&& adjacencyList, int firstSplitNode) : Graph(std::move(adjacencyList)), firstSplitNode(firstSplitNode) { }
-
-
-SubdivisionGraph Graph::createSubdivisionGraph() const {
-    // create new adjacency list for subdivided graph
-    // TODO: could do more to reserve space in this list (since we know the sizes ahead of time)
-    std::vector<std::vector<Edge>> subdividedList;
-    int originalNodeCount = static_cast<int>(this->adjacencyList.size());
-    int nextNodeId = originalNodeCount;
-    
-    // could easily do this more accurately with the amount of existing nodes and new nodes we'll have
-    subdividedList.resize(this->adjacencyList.size());
-    
-    for (int u = 0; u < this->adjacencyList.size(); u++) {
+void Graph::subdivideGraph() {
+    for (int u = 0; u < this->nodeCount(); u++) {
         for (Edge edge : this->adjacencyList[u]) {
             int v = edge.to_vertex;
             int weight = edge.weight;
@@ -70,28 +77,20 @@ SubdivisionGraph Graph::createSubdivisionGraph() const {
             if (v > u) {
                 continue;
             }
-            int nextNode = nextNodeId;
-
-            subdividedList[u].push_back(Edge(nextNode, weight));
+            int splitNodeId = this->createNode();
             
-            assert(subdividedList.size() == nextNodeId);
-            subdividedList.push_back({Edge(u, weight)});
+            this->addUndirectedEdge(u, splitNodeId, weight);
             
             // if u,v is not a subloop
             if (u != v) {
-                subdividedList[v].push_back(Edge(nextNode, weight));
-                subdividedList[nextNode].push_back(Edge(v, weight));
+                this->addUndirectedEdge(v, splitNodeId, weight);
             }
-            
-            nextNodeId++;
         }
     }
-    
-    return SubdivisionGraph(std::move(subdividedList), originalNodeCount);
 }
 
 void Graph::display() const {
-    for (size_t index = 0; index < this->adjacencyList.size(); index++) {
+    for (int index = 0; index < this->nodeCount(); index++) {
         std::cout << index << ": ";
         for (Edge neighbor : this->adjacencyList[index]) {
             std::cout << "(" << neighbor.to_vertex << "," << neighbor.weight << ") ";
@@ -102,13 +101,13 @@ void Graph::display() const {
 
 void Graph::displayDOT() const {
     std::cout << "graph {\n";
-    for (size_t index = 0; index < this->adjacencyList.size(); index++) {
+    for (int index = 0; index < this->nodeCount(); index++) {
         for (Edge neighbor : this->adjacencyList[index]) {
             // since we're working with undirected graphs, only output each edge once
             if (index > neighbor.to_vertex) {
                 continue;
             }
-            std::cout << index << " -- " << neighbor.to_vertex << " [weight=" << neighbor.weight << "]\n";
+            std::cout << index << " -- " << neighbor.to_vertex << " [label=" << neighbor.weight << "]\n";
         }
     }
     std::cout << "}\n";
@@ -120,7 +119,7 @@ Graph Graph::getInducedGraph(const Subset& subset) const {
     inducedAdjacencyList.resize(subset.size());
     
     // create a vector of old index -> new index. nodes not present in induced subgraph get -1
-    std::vector<int> newEdgeMapping(this->adjacencyList.size(), -1);
+    std::vector<int> newEdgeMapping(this->nodeCount(), -1);
     
     int nextIndex = 0;
     for (int node : subset) {
@@ -143,3 +142,30 @@ Graph Graph::getInducedGraph(const Subset& subset) const {
     return Graph(std::move(inducedAdjacencyList));
 }
 
+
+void Graph::addSourceSink(const Subset& sourceNodes) {
+    // presumably the source is already sorted, so it shouldn't take much time
+    Subset sortedCut = sourceNodes;
+    std::sort(sortedCut.begin(), sortedCut.end());
+    
+    Subset::iterator it = sortedCut.begin();
+    
+    int initialNodeCount = this->nodeCount();
+    
+    int superSource = this->createNode();
+    int superSink = this->createNode();
+    
+    // TODO: probably need to change this, like to 1/phi
+    int CAPACITY = 1;
+    
+    for (int node = 0; node < initialNodeCount; node++) {
+        while (*it < node && it != sortedCut.end()) {
+            it++;
+        }
+        if (*it == node) {
+            this->addUndirectedEdge(node, superSource, CAPACITY);
+        } else {
+            this->addUndirectedEdge(node, superSink, CAPACITY);
+        }
+    }
+}

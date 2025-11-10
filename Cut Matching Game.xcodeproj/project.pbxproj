@@ -7,18 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A06EC3012EBA836100B76075 /* tiny.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = A06EC2FA2EBA832F00B76075 /* tiny.txt */; };
+		A06EC3012EBA836100B76075 /* tiny.txt in Copy Files */ = {isa = PBXBuildFile; fileRef = A06EC2FA2EBA832F00B76075 /* tiny.txt */; };
+		A0B4C7552EC16BE400577592 /* max_flow_test.txt in Copy Files */ = {isa = PBXBuildFile; fileRef = A0B4C7542EC16BDF00577592 /* max_flow_test.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		A059F7642EA9899B00B8D482 /* CopyFiles */ = {
+		A059F7642EA9899B00B8D482 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				A06EC3012EBA836100B76075 /* tiny.txt in CopyFiles */,
+				A0B4C7552EC16BE400577592 /* max_flow_test.txt in Copy Files */,
+				A06EC3012EBA836100B76075 /* tiny.txt in Copy Files */,
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -28,6 +31,7 @@
 		A06EC2FA2EBA832F00B76075 /* tiny.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tiny.txt; sourceTree = "<group>"; };
 		A06EC2FC2EBA832F00B76075 /* janiuk_implementation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = janiuk_implementation.cpp; sourceTree = "<group>"; };
 		A06EC2FD2EBA832F00B76075 /* gen.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = gen.py; sourceTree = "<group>"; };
+		A0B4C7542EC16BDF00577592 /* max_flow_test.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = max_flow_test.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -71,6 +75,7 @@
 		A06EC2FB2EBA832F00B76075 /* graphs */ = {
 			isa = PBXGroup;
 			children = (
+				A0B4C7542EC16BDF00577592 /* max_flow_test.txt */,
 				A06EC2FA2EBA832F00B76075 /* tiny.txt */,
 			);
 			path = graphs;
@@ -93,7 +98,7 @@
 			buildPhases = (
 				A059F7622EA9899B00B8D482 /* Sources */,
 				A059F7632EA9899B00B8D482 /* Frameworks */,
-				A059F7642EA9899B00B8D482 /* CopyFiles */,
+				A059F7642EA9899B00B8D482 /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -275,8 +280,10 @@
 		A059F76E2EA9899B00B8D482 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
+				HEADER_SEARCH_PATHS = /opt/homebrew/opt/eigen/include/eigen3/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -284,8 +291,10 @@
 		A059F76F2EA9899B00B8D482 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
+				HEADER_SEARCH_PATHS = /opt/homebrew/opt/eigen/include/eigen3/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
