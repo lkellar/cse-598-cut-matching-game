@@ -16,15 +16,17 @@
 #include <random>
 
 int main(int argc, const char * argv[]) {
-    if (argc != 3) {
-        std::cerr << "Expected 2 arguments: line count and file\n";
+    if (argc != 4) {
+        std::cerr << "Expected 2 arguments: 1/phi, line count, and file\n";
         return EXIT_FAILURE;
     }
     
-    std::ifstream file(argv[2]);
+    int phiInverse = atoi(argv[1]);
+    
+    std::ifstream file(argv[3]);
     std::stringstream fileBuffer;
     
-    int nodes = atoi(argv[1]);
+    int nodes = atoi(argv[2]);
     
     if (file.is_open()) {
         fileBuffer << file.rdbuf();
@@ -37,11 +39,17 @@ int main(int argc, const char * argv[]) {
     std::cout << "Original Graph\n";
     Graph graph(nodes, fileBuffer);
     graph.displayDOT();
+    graph.subdivideGraph();
     
-    MaxFlow flow(graph, 0, 5);
+    // initialize game, with index[nodes] being where the first split node starts and index[graph.nodeCount()] being right after the last split node
+    Game game(graph, nodes, graph.nodeCount(), phiInverse);
     
-    int maxFlow = flow.computeMaxFlow();
-    std::cout << "Max Flow: " << maxFlow << std::endl;
+    //Cut cut = game.generateCut();
+   /* Cut cut = {{10,11,12,13,16,14,15,17,18,19}, {20,21,22,23,24,25,26,27,28,29}};
+    Matching match = game.generateMatching(cut, graph);
+    game.bumpRound(match);*/
+    game.run();
+    
     
     /*std::cout << "Subdivision\n";
     Graph subdivision = graph.createSubdivisionGraph();

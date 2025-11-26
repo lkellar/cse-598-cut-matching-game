@@ -12,17 +12,23 @@
 
 class Game {
 public:
-    Game(int nodes);
+    // pass indexes of the first and last split node (exclusive), because we only generate cuts of split nodes
+    Game(const Graph& graph, int firstSplitNode, int pastSplitNode, int phiInverse);
     // end the round by adding the matching player's submission to the matrix
-    void bumpRound(Matching& matching);
-    //Bisection generateBisection(std::vector<Matching>& matchings);
-    Subset generateCut();
-    
+    void bumpRound(Matching matching);
+    // returns both sides of a cut of split nodes
+    Cut generateCut();
+    // need to copy the graph so we can add temporary source/sinks
+    Matching generateMatching(const Cut& cut, Graph graph);
+    void run();
 private:
-    // matrix that consists of M_1 * M_2 * M_3 .. up til the current round
-    //MatrixXd matchings;
+    const Graph& graph;
     std::vector<Matching> matchings;
-    int nodes;
+    // represents 1/phi, but as an int (since most phi is 1 / int) instead of a double
+    int phiInverse;
+    int splitNodeCount;
+    int firstSplitNode;
+    int pastSplitNode;
     std::vector<double> computeProjection();
     std::vector<double> generateRandomVector() const;
     double computeMedian(std::vector<double>& data) const;

@@ -24,7 +24,7 @@ def generate():
     nodes = range(0, args.nodes)
     maxEdges = (args.nodes * (args.nodes - 1)) // 2
     if args.edges > maxEdges:
-        raise RuntimeError(f'Graph with {args.nodes} can\'t contain {args.edges} edges')
+        raise RuntimeError(f'Graph with {args.nodes} nodes can\'t contain {args.edges} edges')
     edges = []
     
     for index in random.sample(range(maxEdges), args.edges):

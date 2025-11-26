@@ -63,6 +63,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "6 max_flow_test.txt"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "2 10 /Users/lucas/Downloads/barbell.txt"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

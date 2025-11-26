@@ -17,6 +17,7 @@ class SubdivisionGraph;
 
 using Matching = std::vector<std::pair<int, int>>;
 using Subset = std::vector<int>;
+using Cut = std::pair<Subset, Subset>;
 
 struct Edge {
     int to_vertex;
@@ -33,18 +34,20 @@ public:
     void subdivideGraph();
     // generate new graph only containing nodes from the subset
     Graph getInducedGraph(const Subset& subset) const;
-    // adds super source/sink nodes to the graph, where super source is connected to provided subset, and super sink is provided to the nodes not in the subset
-    void addSourceSink(const Subset& sourceNodes);
+    // adds super source/sink nodes to the graph, where super source is connected to first provided subset, and super sink is connected to the second subset
+    // return {source,sink} node ids
+    std::pair<int, int> addSourceSink(const Cut& cut);
     void display() const;
     // output in graphviz DOT format
     void displayDOT() const;
+    int nodeCount() const;
 private:
     std::vector<std::vector<Edge>> adjacencyList;
     // assumes u and v are already nodes in the graph (the adjacencyList.size > u and > v)
     void addUndirectedEdge(int u, int v, int weight);
+    void deleteUndirectedEdge(int u, int v);
     // adds another node with provided edges (default none) to the adjacency list and returns its id
     int createNode(std::vector<Edge> edges = {});
-    int nodeCount() const;
     friend class MaxFlow;
 };
 

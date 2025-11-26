@@ -57,6 +57,25 @@ void Graph::addUndirectedEdge(int u, int v, int weight) {
     this->adjacencyList[v].push_back(Edge(u, weight));
 }
 
+void Graph::deleteUndirectedEdge(int u, int v) {
+    //std::cout << "Deleting (" << u << ", " << v << ")\n";
+    assert(this->nodeCount() > u);
+    assert(this->nodeCount() > v);
+    auto it = std::find_if(this->adjacencyList[u].begin(), this->adjacencyList[u].end(), [v](const Edge& edge) {
+        return edge.to_vertex == v;
+    });
+    
+    assert(it != this->adjacencyList[u].end());
+    this->adjacencyList[u].erase(it);
+    
+    it = std::find_if(this->adjacencyList[v].begin(), this->adjacencyList[v].end(), [u](const Edge& edge) {
+        return edge.to_vertex == u;
+    });
+    
+    assert(it != this->adjacencyList[v].end());
+    this->adjacencyList[v].erase(it);
+}
+
 int Graph::createNode(std::vector<Edge> edges) {
     int nextNodeId = this->nodeCount();
     this->adjacencyList.push_back(edges);
@@ -68,8 +87,11 @@ Graph::Graph(std::vector<std::vector<Edge>>&& adjacencyList) {
 }
 
 void Graph::subdivideGraph() {
-    for (int u = 0; u < this->nodeCount(); u++) {
-        for (Edge edge : this->adjacencyList[u]) {
+    int initialNodeCount = this->nodeCount();
+    for (int u = 0; u < initialNodeCount; u++) {
+        // need to copy the vector because we're going to modify it
+        std::vector<Edge> neighbors = this->adjacencyList[u];
+        for (Edge edge : neighbors) {
             int v = edge.to_vertex;
             int weight = edge.weight;
             // when we add the new node, we'll add both edges at once (so we label the new node once)
@@ -85,6 +107,8 @@ void Graph::subdivideGraph() {
             if (u != v) {
                 this->addUndirectedEdge(v, splitNodeId, weight);
             }
+            
+            this->deleteUndirectedEdge(u, v);
         }
     }
 }
@@ -143,29 +167,43 @@ Graph Graph::getInducedGraph(const Subset& subset) const {
 }
 
 
-void Graph::addSourceSink(const Subset& sourceNodes) {
-    // presumably the source is already sorted, so it shouldn't take much time
-    Subset sortedCut = sourceNodes;
+std::pair<int, int> Graph::addSourceSink(const Cut& cut) {
+    // presumably the cut is already sorted, so it shouldn't take much time
+    Subset sortedCut = cut.first;
     std::sort(sortedCut.begin(), sortedCut.end());
     
-    Subset::iterator it = sortedCut.begin();
+    Subset sortedNotCut = cut.second;
+    std::sort(sortedNotCut.begin(), sortedNotCut.end());
+    
+    Subset::iterator cutIt = sortedCut.begin();
+    Subset::iterator notCutIt = sortedNotCut.begin();
     
     int initialNodeCount = this->nodeCount();
     
     int superSource = this->createNode();
+    //std::cout << "super source: " << superSource << "\n";
     int superSink = this->createNode();
+    //std::cout << "super sink: " << superSink << "\n";
+    
     
     // TODO: probably need to change this, like to 1/phi
     int CAPACITY = 1;
     
     for (int node = 0; node < initialNodeCount; node++) {
-        while (*it < node && it != sortedCut.end()) {
-            it++;
+        while (*cutIt < node && cutIt != sortedCut.end()) {
+            cutIt++;
         }
-        if (*it == node) {
+        while (*notCutIt < node && notCutIt != sortedNotCut.end()) {
+            notCutIt++;
+        }
+        if (*cutIt == node) {
+            //std::cout << "adding source edge!\n";
             this->addUndirectedEdge(node, superSource, CAPACITY);
-        } else {
+        } else if (*notCutIt == node) {
+            //std::cout << "adding sink edge!\n";
             this->addUndirectedEdge(node, superSink, CAPACITY);
         }
     }
+    
+    return {superSource, superSink};
 }
