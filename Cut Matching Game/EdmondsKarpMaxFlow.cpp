@@ -7,6 +7,7 @@
 
 #include "EdmondsKarpMaxFlow.hpp"
 #include <cassert>
+#include <unordered_map>
 
 EdmondsKarpMaxFlow::EdmondsKarpMaxFlow(const Graph& graph, int source, int sink, int targetFlow, int phiInverse) : MaxFlow(graph, source, sink, targetFlow, phiInverse) {
     // stores node id that was used to get to a given vertex
@@ -54,8 +55,12 @@ int EdmondsKarpMaxFlow::computeMaxFlow() {
     int flow = 0;
     
     int next_flow = 0;
+    matching.clear();
     
     while ((next_flow = this->findFlow()) > 0) {
+        int sourceConnect = -1;
+        int sinkConnect = -1;
+        
         flow += next_flow;
         // update the residual graph based on the found flow
         int current = this->sink;
@@ -63,16 +68,23 @@ int EdmondsKarpMaxFlow::computeMaxFlow() {
             int prev = parent[current];
             assert(prev != -1);
             
-            // TODO: THESE ARE ACTUALLY FORWARD EDGES
             Edge& forward = this->findResidualEdgeTo(prev, current);
-            // TODO: THESE ARE ACTUALLY BACKWARDS EDGES
-            
             Edge& backward = this->findResidualEdgeTo(current, prev);
+            
+            if (prev == this->source) {
+                sourceConnect = current;
+            }
+            if (current == this->sink) {
+                sinkConnect = prev;
+            }
             
             forward.weight -= next_flow;
             backward.weight += next_flow;
             current = prev;
         }
+        
+        assert(sourceConnect != -1 && sinkConnect != -1);
+        matching[sourceConnect] = sinkConnect;
     }
     
     return flow;

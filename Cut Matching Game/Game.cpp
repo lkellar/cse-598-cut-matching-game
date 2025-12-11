@@ -109,7 +109,7 @@ Matching Game::generateMatching(const Cut& cut, Graph graph) {
     // target max flow should be n/2 where n is number of split nodes (so basically m/2)
     EdmondsKarpMaxFlow flow(graph, sourceSink.first, sourceSink.second, targetFlow, phiInverse);
     //PushRelabelMaxFlow pushFlow(graph, sourceSink.first, sourceSink.second, targetFlow, phiInverse);
-    
+
     int maxFlow = flow.computeMaxFlow();
     //int pushMaxFlow = pushFlow.computeMaxFlow();
     
@@ -120,7 +120,10 @@ Matching Game::generateMatching(const Cut& cut, Graph graph) {
         // TODO: actually report the cut
         exit(0);
     }
-    Matching match = flow.decomposeFlow();
+    Matching match;
+    match.reserve(flow.matching.size());
+    match.assign(flow.matching.begin(), flow.matching.end());
+    //Matching match = flow.decomposeFlow();
     
     /*int acrossCut = 0;
     int total = 0;

@@ -66,11 +66,11 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2 20 /Users/lucas/Downloads/barbell_large_20.txt"
+            argument = "2 /Users/lucas/Downloads/barbell_large_20.graph"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2 200 /Users/lucas/Downloads/barbell_large_200.txt"
+            argument = "2 /Users/lucas/Downloads/barbell_large_200.graph"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

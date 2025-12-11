@@ -1,7 +1,7 @@
 # Generate Example Graphs in Adjacency List format
-# For n nodes, the output will be an n-line file, where the n-th (0 indexed) line is a comma seperated list of all the nodes it neighbors with 
-# Edges are generated randomly
-# TODO add capacity besides unit 
+# Edges are generated randomly with unit capacity
+# Outputs in Chaco format
+# https://chriswalshaw.co.uk/jostle/jostle-exe.pdf
 
 from argparse import ArgumentParser
 import pathlib
@@ -37,10 +37,15 @@ def generate():
         adjacencyList[edges[1]].append(str(edges[0]))
     
     output = ''
+    output += f'{args.nodes} {args.edges}\n'
     for key in sorted(adjacencyList.keys()):
+        if len(adjacencyList[key]) == 0:
+            output += '\n'
+            continue
         # output all edges as capacity 1 for now
-        output += ',1,'.join(adjacencyList[key])
-        output += ',1\n'
+        output += '1 '
+        output += ' 1 '.join(adjacencyList[key])
+        output += '\n'
 
     with open(args.output, 'w') as f:
         f.write(output)

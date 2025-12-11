@@ -28,7 +28,7 @@ struct Edge {
 class Graph {
 public:
     // accepts a buffer of an adjacency list, where each line is neighbor,weight,neighbor,weight and so on
-    Graph(int nodes, std::stringstream& buffer);
+    Graph(std::stringstream& buffer);
     explicit Graph(std::vector<std::vector<Edge>>&& adjacencyList);
     // Modifies the graph where each edge (u,v) is split into two edges joined by a new node w, resulting in (u,w) and (w,v)
     void subdivideGraph();

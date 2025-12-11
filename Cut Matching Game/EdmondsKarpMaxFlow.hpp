@@ -17,6 +17,8 @@ public:
     // https://en.wikipedia.org/wiki/Edmonds–Karp_algorithm
     // also referenced https://cp-algorithms.com/graph/edmonds_karp.html
     int computeMaxFlow();
+    // we can actually find a matching as a part of the max_flow process
+    std::unordered_map<int, int> matching;
 private:
     // helper algorithm to run the breadth first search to find a flow
     int findFlow();

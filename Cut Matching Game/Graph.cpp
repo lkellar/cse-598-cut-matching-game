@@ -14,24 +14,30 @@
 #include <queue>
 #include <limits>
 
-Graph::Graph(int nodes, std::stringstream& buffer) {
-    this->adjacencyList.resize(nodes);
+// accepts input in CHACO format
+// https://chriswalshaw.co.uk/jostle/jostle-exe.pdf
+Graph::Graph( std::stringstream& buffer) {
     std::string line;
     
     int index = 0;
+    std::getline(buffer, line);
+    // first line is NODES EDGES so stoi will grab the nodes
+    int nodes = stoi(line);
+    this->adjacencyList.resize(nodes);
+
     while (std::getline(buffer, line)) {
         std::istringstream linebuf(line);
         std::vector<Edge> neighbors;
         std::string segment;
         
-        while (std::getline(linebuf, segment, ',')) {
-            int to = std::stoi(segment);
+        while (linebuf >> segment) {
+            int weight = std::stoi(segment);
             
-            if (!std::getline(linebuf, segment, ',')) {
-                std::cerr << "Found incomplete adjacency list on line " << index << "; found an neighbor with no weight\n";
+            if (!(linebuf >> segment)) {
+                std::cerr << "Found incomplete adjacency list on line " << (index+1) << "; found an weight with no neighbor\n";
                 break;
             }
-            int weight = std::stoi(segment);
+            int to = std::stoi(segment);
             
             neighbors.push_back(Edge(to, weight));
         }
