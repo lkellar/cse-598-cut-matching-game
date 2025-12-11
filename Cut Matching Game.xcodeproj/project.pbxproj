@@ -6,11 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		A06EC3012EBA836100B76075 /* tiny.txt in Copy Files */ = {isa = PBXBuildFile; fileRef = A06EC2FA2EBA832F00B76075 /* tiny.txt */; };
-		A0B4C7552EC16BE400577592 /* max_flow_test.txt in Copy Files */ = {isa = PBXBuildFile; fileRef = A0B4C7542EC16BDF00577592 /* max_flow_test.txt */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		A059F7642EA9899B00B8D482 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -18,8 +13,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				A0B4C7552EC16BE400577592 /* max_flow_test.txt in Copy Files */,
-				A06EC3012EBA836100B76075 /* tiny.txt in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -28,16 +21,47 @@
 
 /* Begin PBXFileReference section */
 		A059F7662EA9899B00B8D482 /* Cut Matching Game */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Cut Matching Game"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A06EC2FA2EBA832F00B76075 /* tiny.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = tiny.txt; sourceTree = "<group>"; };
 		A06EC2FC2EBA832F00B76075 /* janiuk_implementation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = janiuk_implementation.cpp; sourceTree = "<group>"; };
 		A06EC2FD2EBA832F00B76075 /* gen.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = gen.py; sourceTree = "<group>"; };
-		A0B4C7542EC16BDF00577592 /* max_flow_test.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = max_flow_test.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A05F74D82EE9FF1100C7667C /* Exceptions for "graphs" folder in "Cut Matching Game" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				barbell.txt,
+				max_flow_test.txt,
+				tiny.txt,
+			);
+			target = A059F7652EA9899B00B8D482 /* Cut Matching Game */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		A05F74DC2EE9FF6C00C7667C /* Exceptions for "graphs" folder in "Copy Files" phase from "Cut Matching Game" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = A059F7642EA9899B00B8D482 /* Copy Files */;
+			membershipExceptions = (
+				barbell.txt,
+				max_flow_test.txt,
+				tiny.txt,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A059F7682EA9899B00B8D482 /* Cut Matching Game */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Cut Matching Game";
+			sourceTree = "<group>";
+		};
+		A05F74D32EE9FED100C7667C /* graphs */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A05F74D82EE9FF1100C7667C /* Exceptions for "graphs" folder in "Cut Matching Game" target */,
+				A05F74DC2EE9FF6C00C7667C /* Exceptions for "graphs" folder in "Copy Files" phase from "Cut Matching Game" target */,
+			);
+			path = graphs;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -56,7 +80,7 @@
 		A059F75D2EA9899B00B8D482 = {
 			isa = PBXGroup;
 			children = (
-				A06EC2FB2EBA832F00B76075 /* graphs */,
+				A05F74D32EE9FED100C7667C /* graphs */,
 				A06EC2FC2EBA832F00B76075 /* janiuk_implementation.cpp */,
 				A06EC2FE2EBA832F00B76075 /* scripts */,
 				A059F7682EA9899B00B8D482 /* Cut Matching Game */,
@@ -70,15 +94,6 @@
 				A059F7662EA9899B00B8D482 /* Cut Matching Game */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		A06EC2FB2EBA832F00B76075 /* graphs */ = {
-			isa = PBXGroup;
-			children = (
-				A0B4C7542EC16BDF00577592 /* max_flow_test.txt */,
-				A06EC2FA2EBA832F00B76075 /* tiny.txt */,
-			);
-			path = graphs;
 			sourceTree = "<group>";
 		};
 		A06EC2FE2EBA832F00B76075 /* scripts */ = {
@@ -99,6 +114,7 @@
 				A059F7622EA9899B00B8D482 /* Sources */,
 				A059F7632EA9899B00B8D482 /* Frameworks */,
 				A059F7642EA9899B00B8D482 /* Copy Files */,
+				A05F74D72EE9FF1100C7667C /* Resources */,
 			);
 			buildRules = (
 			);
@@ -106,6 +122,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				A059F7682EA9899B00B8D482 /* Cut Matching Game */,
+				A05F74D32EE9FED100C7667C /* graphs */,
 			);
 			name = "Cut Matching Game";
 			packageProductDependencies = (
@@ -146,6 +163,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A05F74D72EE9FF1100C7667C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A059F7622EA9899B00B8D482 /* Sources */ = {

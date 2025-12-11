@@ -6,10 +6,12 @@
 //
 
 #include "Game.hpp"
-#include "MaxFlow.hpp"
+#include "EdmondsKarpMaxFlow.hpp"
+#include "PushRelabelMaxFlow.hpp"
 #include <random>
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 
 #include <iostream>
 
@@ -62,9 +64,6 @@ std::vector<double> Game::computeProjection() {
 std::pair<Subset, Subset> Game::generateCut() {
     std::vector<double> posVector = this->computeProjection();
     
-    // TODO: handle odd number of split nodes later
-    assert(this->splitNodeCount % 2 == 0);
-    
     // so we can keep track of position and node when we find median
     std::vector<std::pair<double, int>> pairedPosVector;
     pairedPosVector.reserve(posVector.size());
@@ -86,7 +85,8 @@ std::pair<Subset, Subset> Game::generateCut() {
     
     Subset cut, notCut;
     cut.reserve(this->splitNodeCount / 2);
-    notCut.reserve(this->splitNodeCount / 2);
+    // in case its odd
+    notCut.reserve((this->splitNodeCount / 2) + 1);
     
     for (auto it = pairedPosVector.begin(); it != pairedPosVector.end(); it++) {
         if (it < median) {
@@ -103,21 +103,54 @@ Matching Game::generateMatching(const Cut& cut, Graph graph) {
     std::pair<int, int> sourceSink = graph.addSourceSink(cut);
     
     //std::cout << "Cut Size: " << cut.first.size() << std::endl;
-    assert(this->splitNodeCount % 2 == 0);
+    //assert(this->splitNodeCount % 2 == 0);
     int targetFlow = this->splitNodeCount / 2;
     
     // target max flow should be n/2 where n is number of split nodes (so basically m/2)
-    MaxFlow flow(graph, sourceSink.first, sourceSink.second, targetFlow, phiInverse);
+    EdmondsKarpMaxFlow flow(graph, sourceSink.first, sourceSink.second, targetFlow, phiInverse);
+    //PushRelabelMaxFlow pushFlow(graph, sourceSink.first, sourceSink.second, targetFlow, phiInverse);
     
     int maxFlow = flow.computeMaxFlow();
+    //int pushMaxFlow = pushFlow.computeMaxFlow();
     
-    std::cout << "Found Max Flow of " << maxFlow << " | Target was " << targetFlow << "\n";
+    std::cout << "Edmonds Karp Max Flow: " << maxFlow << " | Target was " << targetFlow << "\n";
     if (maxFlow * phiInverse < targetFlow) {
         std::cout << "Found 1/" << phiInverse << " cut in graph. Quitting\n";
+        std::cout << "Took " << this->matchings.size() + 1 << " rounds to find the cut\n";
         // TODO: actually report the cut
         exit(0);
     }
     Matching match = flow.decomposeFlow();
+    
+    /*int acrossCut = 0;
+    int total = 0;
+    for (auto pair : match) {
+        bool firstInFirst = std::find(cut.first.begin(), cut.first.end(), pair.first) == cut.first.end();
+        bool secondInFirst = std::find(cut.first.begin(), cut.first.end(), pair.second) == cut.first.end();
+        if (firstInFirst != secondInFirst) {
+            acrossCut += 1;
+        }
+        total += 1;
+    }
+    
+    std::cout << "Cut Left: ";
+    for (int node : cut.first) {
+        std::cout << node <<", ";
+    }
+    std::cout << " | Cut Right: ";
+    for (int node : cut.second) {
+        std::cout << node <<", ";
+    }
+    std::cout << "\n";
+    
+    std::cout << "Across Cut: " << acrossCut << " | Total " << total << "\n";
+    
+    std::cout << "Matching: ";
+    for (auto pair : match) {
+        std::cout << "("<< pair.first << ", " << pair.second << "), ";
+    }
+    
+    std::cout << "\n\n\n";*/
     
     return match;
 }
@@ -127,9 +160,13 @@ void Game::bumpRound(Matching matching) {
 }
 
 void Game::run() {
-    for (int i = 0; i < 15; i++) {
+    int originalNodeCount = static_cast<double>(firstSplitNode);
+    int rounds = std::ceil(pow(std::log(originalNodeCount), 2));
+    std::cout << "Estimated Rounds: " << rounds << "\n";
+    for (int i = 0; i < 100; i++) {
         Cut cut = this->generateCut();
         Matching match = this->generateMatching(cut, graph);
         this->bumpRound(match);
     }
+    std::cout << "Couldn't find min cut. Graph should be a 1/" << phiInverse << " expander\n";
 }

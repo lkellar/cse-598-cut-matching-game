@@ -17,15 +17,11 @@ class MaxFlow {
 public:
     // assumes graph is undirected, so the residual graph is equal to the graph
     MaxFlow(const Graph& graph, int source, int sink, int targetFlow, int phiInverse) ;
-    // implementation of Edmonds-Karp
-    // https://en.wikipedia.org/wiki/Edmonds–Karp_algorithm
-    // also referenced https://cp-algorithms.com/graph/edmonds_karp.html
-    int computeMaxFlow();
+    
+    virtual int computeMaxFlow() = 0;
     // assumes max flow has been run on residual graph
     Matching decomposeFlow();
-private:
-    // helper algorithm to run the breadth first search to find a flow
-    int findFlow();
+protected:
     // edge weights represent capacities
     // we're hacking this a bit and treating undirected edges here as directed edges (e.g. weights are directional /represent residual capacity, connections are not)
     Graph residual;
@@ -34,10 +30,13 @@ private:
     int sink;
     int targetFlow;
     int phiInverse;
-    std::vector<int> parent;
     // Sets all capacities on inner edges (NOT connected to source or sink) to the argument.
     // Sets all capacities connected to source/sink to 1
     void setCapacities(int innerEdgeCapacities);
+    // will fail if edge doesn't exist
+    // this is incredibly slow and should be deleted
+    Edge& findResidualEdgeTo(int from, int to);
+    const int nodeCount;
 };
 
 

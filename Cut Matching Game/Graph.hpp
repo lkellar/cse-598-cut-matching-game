@@ -49,6 +49,8 @@ private:
     // adds another node with provided edges (default none) to the adjacency list and returns its id
     int createNode(std::vector<Edge> edges = {});
     friend class MaxFlow;
+    friend class EdmondsKarpMaxFlow;
+    friend class PushRelabelMaxFlow;
 };
 
 #endif /* Graph_h */
