@@ -15,6 +15,7 @@
 #include <limits>
 
 // accepts input in CHACO format, with no weights
+// nodes are 1-indexed
 // https://chriswalshaw.co.uk/jostle/jostle-exe.pdf
 Graph::Graph( std::stringstream& buffer) {
     std::string line;
@@ -31,7 +32,7 @@ Graph::Graph( std::stringstream& buffer) {
         std::string segment;
         
         while (linebuf >> segment) {
-            int to = std::stoi(segment);
+            int to = std::stoi(segment) - 1;
             // SKIP SELF LOOPS
             if (index == to) {
                 continue;

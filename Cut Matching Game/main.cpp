@@ -16,12 +16,18 @@
 #include <random>
 
 int main(int argc, const char * argv[]) {
-    if (argc != 3) {
-        std::cerr << "Expected 2 arguments: 1/phi, and file\n";
+    if (argc != 3 && argc != 4) {
+        std::cerr << "Expected 2 or 3  arguments: 1/phi, file, and #random_vectors (OPTIONAL)\n";
         return EXIT_FAILURE;
     }
     
     int phiInverse = atoi(argv[1]);
+    
+    // use -1 as an value for infinite if not present
+    int randomVectorCount = -1;
+    if (argc == 4) {
+        randomVectorCount = atoi(argv[3]);
+    }
     
     std::ifstream file(argv[2]);
     std::stringstream fileBuffer;
@@ -34,34 +40,13 @@ int main(int argc, const char * argv[]) {
     }
     file.close();
     
-    std::cout << "Original Graph\n";
     Graph graph(fileBuffer);
     int originalNodeCount = graph.nodeCount();
     //graph.displayDOT();
     graph.subdivideGraph();
     
     // initialize game, with index[nodes] being where the first split node starts and index[graph.nodeCount()] being right after the last split node
-    Game game(graph, originalNodeCount, graph.nodeCount(), phiInverse);
-    
-    //Cut cut = game.generateCut();
-   /* Cut cut = {{10,11,12,13,16,14,15,17,18,19}, {20,21,22,23,24,25,26,27,28,29}};
-    Matching match = game.generateMatching(cut, graph);
-    game.bumpRound(match);*/
+    Game game(graph, originalNodeCount, graph.nodeCount(), phiInverse, randomVectorCount);
     game.run();
-    
-    
-    /*std::cout << "Subdivision\n";
-    Graph subdivision = graph.createSubdivisionGraph();
-    subdivision.displayDOT();*/
-    
-    /*Game game(nodes);
-    Subset cut = game.generateCut();
-    
-    std::cout << "Cut\n";
-    
-    Graph induced = graph.getInducedGraph(cut);
-    induced.display();*/
-    
-    
     return EXIT_SUCCESS;
 }

@@ -94,3 +94,4 @@ graphs/**/*.txt
 graphs/**/*.graph
 
 __pycache__
+cmg

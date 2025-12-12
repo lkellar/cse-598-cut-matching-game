@@ -32,8 +32,8 @@
    </TestAction>
    <LaunchAction
       buildConfiguration = "Release"
-      selectedDebuggerIdentifier = ""
-      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
       customWorkingDirectory = "/Users/lucas/Documents/UMich 2025-2026/CSE 598/Final Project/Cut Matching Game"
@@ -58,15 +58,15 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2 /Users/lucas/Downloads/barbell_400.graph"
+            argument = "2 /Users/lucas/Downloads/barbell_200.graph"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2 graphs/barbells/barbell_40.graph"
-            isEnabled = "YES">
+            argument = "2 graphs/barbells/barbell_200.graph"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2 /Users/lucas/Downloads/delaunay_n10_cleaned.graph"
+            argument = "2 /Users/lucas/Downloads/walshaw/graphs/uk.graph"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
@@ -74,7 +74,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2 /Users/lucas/Downloads/fe_sphere.graph"
+            argument = "2 graphs/expanders/1-4-expander.graph"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>

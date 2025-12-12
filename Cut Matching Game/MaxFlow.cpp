@@ -10,7 +10,7 @@
 #include <cassert>
 #include <iostream>
 
-MaxFlow::MaxFlow(const Graph& graph, int source, int sink, int targetFlow, int phiInverse) : source(source), sink(sink), targetFlow(targetFlow), residual(graph), original(graph), phiInverse(phiInverse), nodeCount(graph.nodeCount()) { };
+MaxFlow::MaxFlow(const Graph& graph, int source, int sink, int targetFlow, int phiInverse) : residual(graph), original(graph), source(source), sink(sink), targetFlow(targetFlow), phiInverse(phiInverse), nodeCount(graph.nodeCount()) { };
 
 
 void MaxFlow::setCapacities(int innerEdgeCapacities) {

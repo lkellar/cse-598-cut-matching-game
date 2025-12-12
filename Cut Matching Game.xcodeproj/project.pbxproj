@@ -282,7 +282,6 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				HEADER_SEARCH_PATHS = /opt/homebrew/opt/eigen/include/eigen3/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -293,7 +292,6 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				HEADER_SEARCH_PATHS = /opt/homebrew/opt/eigen/include/eigen3/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

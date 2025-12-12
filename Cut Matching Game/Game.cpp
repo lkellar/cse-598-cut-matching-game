@@ -19,9 +19,18 @@ std::random_device dev;
 std::mt19937 gen(dev());
 std::uniform_real_distribution<double> dis(0, 1);
 
-Game::Game(const Graph& graph, int firstSplitNode, int pastSplitNode, int phiInverse) : graph(graph), firstSplitNode(firstSplitNode), pastSplitNode(pastSplitNode), splitNodeCount(pastSplitNode - firstSplitNode), phiInverse(phiInverse) { }
+Game::Game(const Graph& graph, int firstSplitNode, int pastSplitNode, int phiInverse, int randomVectorCount) : graph(graph), phiInverse(phiInverse), splitNodeCount(pastSplitNode - firstSplitNode), firstSplitNode(firstSplitNode), pastSplitNode(pastSplitNode),  randomVectorCount(randomVectorCount) {
+    if (randomVectorCount != -1) {
+        std::cout << "Using at maximum " << randomVectorCount << " random vectors\n";
+        randomVectorCache.reserve(randomVectorCount);
+    }
+}
 
-std::vector<double> Game::generateRandomVector() const {
+std::vector<double> Game::generateRandomVector() {
+    if (this->randomVectorCount != -1 && this->currentRound > this->randomVectorCount) {
+        int index = this->currentRound % this->randomVectorCount;
+        return randomVectorCache[index];
+    }
     std::vector<double> random_vector;
     random_vector.resize(this->splitNodeCount);
     
@@ -35,6 +44,10 @@ std::vector<double> Game::generateRandomVector() const {
     double length = sqrt(sum);
     for(int i = 0; i < this->splitNodeCount; ++i) {
         random_vector[i] /= length;
+    }
+    
+    if (this->randomVectorCount != -1) {
+        this->randomVectorCache.push_back(random_vector);
     }
     
     return random_vector;
@@ -102,8 +115,6 @@ std::pair<Subset, Subset> Game::generateCut() {
 Matching Game::generateMatching(const Cut& cut, Graph graph) {
     std::pair<int, int> sourceSink = graph.addSourceSink(cut);
     
-    //std::cout << "Cut Size: " << cut.first.size() << std::endl;
-    //assert(this->splitNodeCount % 2 == 0);
     int targetFlow = this->splitNodeCount / 2;
     
     // target max flow should be n/2 where n is number of split nodes (so basically m/2)
@@ -118,55 +129,31 @@ Matching Game::generateMatching(const Cut& cut, Graph graph) {
     if (maxFlow * phiInverse < targetFlow) {
         std::cout << "Found 1/" << phiInverse << " cut in graph. Quitting\n";
         std::cout << "Took " << this->matchings.size() + 1 << " rounds to find the cut\n";
-        // TODO: actually report the cut
         exit(0);
     }
+    // We can use a quirk of the graph setup / edmonds karp to find the matching within the edmonds karp flow process, without having to seperately decompse it
     Matching match;
     match.reserve(flow.matching.size());
     match.assign(flow.matching.begin(), flow.matching.end());
     //Matching match = flow.decomposeFlow();
-    
-    /*int acrossCut = 0;
-    int total = 0;
-    for (auto pair : match) {
-        bool firstInFirst = std::find(cut.first.begin(), cut.first.end(), pair.first) == cut.first.end();
-        bool secondInFirst = std::find(cut.first.begin(), cut.first.end(), pair.second) == cut.first.end();
-        if (firstInFirst != secondInFirst) {
-            acrossCut += 1;
-        }
-        total += 1;
-    }
-    
-    std::cout << "Cut Left: ";
-    for (int node : cut.first) {
-        std::cout << node <<", ";
-    }
-    std::cout << " | Cut Right: ";
-    for (int node : cut.second) {
-        std::cout << node <<", ";
-    }
-    std::cout << "\n";
-    
-    std::cout << "Across Cut: " << acrossCut << " | Total " << total << "\n";
-    
-    std::cout << "Matching: ";
-    for (auto pair : match) {
-        std::cout << "("<< pair.first << ", " << pair.second << "), ";
-    }
-    
-    std::cout << "\n\n\n";*/
     
     return match;
 }
 
 void Game::bumpRound(Matching matching) {
     this->matchings.push_back(matching);
+    this->currentRound++;
 }
 
 void Game::run() {
     int originalNodeCount = static_cast<double>(firstSplitNode);
     int rounds = std::ceil(pow(std::log2(originalNodeCount), 2));
-    std::cout << "Estimated Rounds: " << rounds << "\n";
+    if (rounds < 10) {
+        std::cout << "Esimated Rounds: " << rounds << ". Using a minimum of 10 rounds\n";
+        rounds = 10;
+    } else {
+        std::cout << "Estimated Rounds: " << rounds << "\n";
+    }
     for (int i = 0; i < rounds; i++) {
         Cut cut = this->generateCut();
         Matching match = this->generateMatching(cut, graph);

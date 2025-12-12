@@ -5,6 +5,7 @@
 //  Created by Lucas Kellar on 12/10/25.
 //
 // Mostly implemented https://cp-algorithms.com/graph/push-relabel-faster.html
+// still needs work if actually to be used, really slow at the moment
 
 #ifndef PushRelabelMaxFlow_hpp
 #define PushRelabelMaxFlow_hpp

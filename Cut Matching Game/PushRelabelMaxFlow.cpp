@@ -6,6 +6,7 @@
 //
 // Most implemented from https://cp-algorithms.com/graph/push-relabel.html
 // and https://cp-algorithms.com/graph/push-relabel-faster.html
+// Still is pretty slow, needs work before being actually used
 
 #include "PushRelabelMaxFlow.hpp"
 #include <cassert>
@@ -63,7 +64,8 @@ void PushRelabelMaxFlow::update_max_height_vertices(std::vector<int>& max_height
 // current-arc add on
 void PushRelabelMaxFlow::discharge(int u) {
     while (excess[u] > 0 && height[u] < nodeCount) {
-        if (seen[u] < this->residual.adjacencyList[u].size()) {
+        int neighborCount = static_cast<int>(this->residual.adjacencyList[u].size());
+        if (seen[u] < neighborCount) {
             int edgeIdx = seen[u];
             Edge& edge = this->residual.adjacencyList[u][edgeIdx];
             if (edge.weight > 0 && height[u] > height[edge.to_vertex]) {
@@ -95,14 +97,14 @@ int PushRelabelMaxFlow::computeMaxFlow() {
         push(source, edge.to_vertex);
     }
     
-    int iterations = 0;
+    //int iterations = 0;
     while (!this->excess_vertices.empty()) {
         int u = this->excess_vertices.front();
         this->excess_vertices.pop();
         if (u != source && u != sink) {
             discharge(u);
         }
-        iterations++;
+        //iterations++;
     }
     
     /*update_max_height_vertices(max_height_vertices);
@@ -126,7 +128,7 @@ int PushRelabelMaxFlow::computeMaxFlow() {
     
     int flow = 0;
     size_t sinkEdges = this->residual.adjacencyList[sink].size();
-    for (int edgeIdx = 0; edgeIdx < sinkEdges; edgeIdx++) {
+    for (size_t edgeIdx = 0; edgeIdx < sinkEdges; edgeIdx++) {
         const Edge& original_edge = this->original.adjacencyList[sink][edgeIdx];
         const Edge& residual_edge = this->residual.adjacencyList[sink][edgeIdx];
         assert(residual_edge.to_vertex == original_edge.to_vertex);

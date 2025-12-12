@@ -33,8 +33,8 @@ class Graph:
         if v in self.neighbors[u] or u in self.neighbors[v]:
             return
         # all edges are undirected and have capacity 1
-        self.neighbors[u].append(str(v))
-        self.neighbors[v].append(str(u))
+        self.neighbors[u].append(v)
+        self.neighbors[v].append(u)
         self.edgeCount += 1
     
     def writeTo(self, file=args.output):
@@ -43,7 +43,8 @@ class Graph:
             if len(neighborList) > 0:
                 #output += '1 '
                 #output += ' 1 '.join(neighborList)
-                output += ' '.join(neighborList)
+                # nodes should be 1-indexed, so shift them all up
+                output += ' '.join([str(u + 1) for u in neighborList])
             output += '\n'
         with open(file, 'w') as f:
             f.write(output)
