@@ -38,6 +38,10 @@ Graph::Graph( std::stringstream& buffer) {
                 break;
             }
             int to = std::stoi(segment);
+            // SKIP SELF LOOPS
+            if (index == to) {
+                continue;
+            }
             
             neighbors.push_back(Edge(to, weight));
         }
@@ -57,6 +61,11 @@ int Graph::nodeCount() const {
 
 
 void Graph::addUndirectedEdge(int u, int v, int weight) {
+    // SKIP SELF LOOPS
+    if (u == v) {
+        std::cerr << "Skipping self-loop for " << u << "\n";
+        return;
+    }
     assert(this->nodeCount() > u);
     assert(this->nodeCount() > v);
     this->adjacencyList[u].push_back(Edge(v, weight));
@@ -73,6 +82,10 @@ void Graph::deleteUndirectedEdge(int u, int v) {
     
     assert(it != this->adjacencyList[u].end());
     this->adjacencyList[u].erase(it);
+    
+    if (u == v) {
+        return;
+    }
     
     it = std::find_if(this->adjacencyList[v].begin(), this->adjacencyList[v].end(), [u](const Edge& edge) {
         return edge.to_vertex == u;

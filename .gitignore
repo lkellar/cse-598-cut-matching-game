@@ -91,3 +91,4 @@ janiuk_implementation.cpp
 
 # probably not forever
 graphs/*.txt
+__pycache__

@@ -7,6 +7,7 @@ from argparse import ArgumentParser
 import pathlib
 import random
 import math
+from build_graph import Graph
 
 parser = ArgumentParser(prog='GraphGen')
 parser.add_argument('output', type=pathlib.Path)
@@ -20,6 +21,7 @@ def indexToPair(i):
 
 def generate():
     args = parser.parse_args()
+    graph = Graph(args.nodes)
     
     nodes = range(0, args.nodes)
     maxEdges = (args.nodes * (args.nodes - 1)) // 2
@@ -33,22 +35,9 @@ def generate():
     adjacencyList = {k: [] for k in nodes}
     
     for edges in edges:
-        adjacencyList[edges[0]].append(str(edges[1]))
-        adjacencyList[edges[1]].append(str(edges[0]))
+        graph.addEdge(edges[0], edges[1])
     
-    output = ''
-    output += f'{args.nodes} {args.edges}\n'
-    for key in sorted(adjacencyList.keys()):
-        if len(adjacencyList[key]) == 0:
-            output += '\n'
-            continue
-        # output all edges as capacity 1 for now
-        output += '1 '
-        output += ' 1 '.join(adjacencyList[key])
-        output += '\n'
-
-    with open(args.output, 'w') as f:
-        f.write(output)
+    graph.writeTo(args.output)
     
     
 if __name__ == "__main__":
