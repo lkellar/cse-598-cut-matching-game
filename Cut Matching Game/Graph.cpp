@@ -14,7 +14,7 @@
 #include <queue>
 #include <limits>
 
-// accepts input in CHACO format
+// accepts input in CHACO format, with no weights
 // https://chriswalshaw.co.uk/jostle/jostle-exe.pdf
 Graph::Graph( std::stringstream& buffer) {
     std::string line;
@@ -31,19 +31,13 @@ Graph::Graph( std::stringstream& buffer) {
         std::string segment;
         
         while (linebuf >> segment) {
-            int weight = std::stoi(segment);
-            
-            if (!(linebuf >> segment)) {
-                std::cerr << "Found incomplete adjacency list on line " << (index+1) << "; found an weight with no neighbor\n";
-                break;
-            }
             int to = std::stoi(segment);
             // SKIP SELF LOOPS
             if (index == to) {
                 continue;
             }
-            
-            neighbors.push_back(Edge(to, weight));
+            // use unit capacity for now
+            neighbors.push_back(Edge(to, 1));
         }
         
         this->adjacencyList[index] = neighbors;

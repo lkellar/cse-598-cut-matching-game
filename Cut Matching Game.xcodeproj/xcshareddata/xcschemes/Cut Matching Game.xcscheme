@@ -35,7 +35,7 @@
       selectedDebuggerIdentifier = ""
       selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
-      useCustomWorkingDirectory = "NO"
+      useCustomWorkingDirectory = "YES"
       customWorkingDirectory = "/Users/lucas/Documents/UMich 2025-2026/CSE 598/Final Project/Cut Matching Game"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
@@ -62,8 +62,8 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2 /Users/lucas/Downloads/barbell_40.graph"
-            isEnabled = "NO">
+            argument = "2 graphs/barbells/barbell_40.graph"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "2 /Users/lucas/Downloads/delaunay_n10_cleaned.graph"
@@ -71,7 +71,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "2 /Users/lucas/Downloads/luxembourg.osm.graph"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "2 /Users/lucas/Downloads/fe_sphere.graph"

@@ -1,4 +1,4 @@
-# Outputs in Chaco format
+# Outputs in Chaco format, unweighted
 # https://chriswalshaw.co.uk/jostle/jostle-exe.pdf
 
 from argparse import ArgumentParser
@@ -41,8 +41,9 @@ class Graph:
         output = f'{len(self.neighbors)} {self.edgeCount}\n'
         for neighborList in self.neighbors:
             if len(neighborList) > 0:
-                output += '1 '
-                output += ' 1 '.join(neighborList)
+                #output += '1 '
+                #output += ' 1 '.join(neighborList)
+                output += ' '.join(neighborList)
             output += '\n'
         with open(file, 'w') as f:
             f.write(output)
