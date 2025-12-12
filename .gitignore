@@ -90,5 +90,7 @@ xcuserdata/
 janiuk_implementation.cpp
 
 # probably not forever
-graphs/*.txt
+graphs/**/*.txt
+graphs/**/*.graph
+
 __pycache__

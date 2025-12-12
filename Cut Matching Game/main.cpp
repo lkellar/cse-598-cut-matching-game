@@ -37,7 +37,7 @@ int main(int argc, const char * argv[]) {
     std::cout << "Original Graph\n";
     Graph graph(fileBuffer);
     int originalNodeCount = graph.nodeCount();
-    graph.displayDOT();
+    //graph.displayDOT();
     graph.subdivideGraph();
     
     // initialize game, with index[nodes] being where the first split node starts and index[graph.nodeCount()] being right after the last split node

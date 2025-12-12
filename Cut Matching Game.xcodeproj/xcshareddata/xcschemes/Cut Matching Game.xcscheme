@@ -31,9 +31,9 @@
       shouldAutocreateTestPlan = "YES">
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      buildConfiguration = "Release"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       customWorkingDirectory = "/Users/lucas/Documents/UMich 2025-2026/CSE 598/Final Project/Cut Matching Game"
@@ -58,27 +58,23 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = ""
+            argument = "2 /Users/lucas/Downloads/barbell_400.graph"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "6 max_flow_test.txt"
+            argument = "2 /Users/lucas/Downloads/barbell_40.graph"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2 /Users/lucas/Downloads/barbell_large_40.graph"
+            argument = "2 /Users/lucas/Downloads/delaunay_n10_cleaned.graph"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "2 /Users/lucas/Downloads/luxembourg.osm.graph"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2 /Users/lucas/Downloads/barbell_large_200.graph"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
             argument = "2 /Users/lucas/Downloads/fe_sphere.graph"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "2 1000 /Users/lucas/Downloads/network_large_1000.txt"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>

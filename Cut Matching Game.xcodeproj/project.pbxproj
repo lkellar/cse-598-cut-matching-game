@@ -25,30 +25,6 @@
 		A06EC2FD2EBA832F00B76075 /* gen.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = gen.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A05F74D82EE9FF1100C7667C /* Exceptions for "graphs" folder in "Cut Matching Game" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				barbell.txt,
-				max_flow_test.txt,
-				tiny.txt,
-			);
-			target = A059F7652EA9899B00B8D482 /* Cut Matching Game */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		A05F74DC2EE9FF6C00C7667C /* Exceptions for "graphs" folder in "Copy Files" phase from "Cut Matching Game" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = A059F7642EA9899B00B8D482 /* Copy Files */;
-			membershipExceptions = (
-				barbell.txt,
-				max_flow_test.txt,
-				tiny.txt,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A059F7682EA9899B00B8D482 /* Cut Matching Game */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -57,10 +33,6 @@
 		};
 		A05F74D32EE9FED100C7667C /* graphs */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				A05F74D82EE9FF1100C7667C /* Exceptions for "graphs" folder in "Cut Matching Game" target */,
-				A05F74DC2EE9FF6C00C7667C /* Exceptions for "graphs" folder in "Copy Files" phase from "Cut Matching Game" target */,
-			);
 			path = graphs;
 			sourceTree = "<group>";
 		};

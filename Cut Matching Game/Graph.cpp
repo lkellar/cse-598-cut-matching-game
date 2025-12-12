@@ -51,7 +51,7 @@ Graph::Graph( std::stringstream& buffer) {
     }
     
     if (index != nodes) {
-        std::cerr << "Input buffer has " << index << " lines but expected data for " << nodes << " nodes.";
+        std::cerr << "Input buffer has " << index << " lines but expected data for " << nodes << " nodes.\n";
     }
 }
 
@@ -150,7 +150,8 @@ void Graph::displayDOT() const {
             if (index > neighbor.to_vertex) {
                 continue;
             }
-            std::cout << index << " -- " << neighbor.to_vertex << " [label=" << neighbor.weight << "]\n";
+            // ignore weights for now since we're mostly looking at unit capacity
+            std::cout << index << " -- " << neighbor.to_vertex <<"\n"; /*<< " [label=" << neighbor.weight << "]\n";*/
         }
     }
     std::cout << "}\n";

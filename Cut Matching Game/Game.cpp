@@ -113,7 +113,8 @@ Matching Game::generateMatching(const Cut& cut, Graph graph) {
     int maxFlow = flow.computeMaxFlow();
     //int pushMaxFlow = pushFlow.computeMaxFlow();
     
-    std::cout << "Edmonds Karp Max Flow: " << maxFlow << " | Target was " << targetFlow << "\n";
+    // explicitly flush
+    std::cout << "Edmonds Karp Max Flow: " << maxFlow << " | Target was " << targetFlow << std::endl;
     if (maxFlow * phiInverse < targetFlow) {
         std::cout << "Found 1/" << phiInverse << " cut in graph. Quitting\n";
         std::cout << "Took " << this->matchings.size() + 1 << " rounds to find the cut\n";
@@ -164,9 +165,9 @@ void Game::bumpRound(Matching matching) {
 
 void Game::run() {
     int originalNodeCount = static_cast<double>(firstSplitNode);
-    int rounds = std::ceil(pow(std::log(originalNodeCount), 2));
+    int rounds = std::ceil(pow(std::log2(originalNodeCount), 2));
     std::cout << "Estimated Rounds: " << rounds << "\n";
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < rounds; i++) {
         Cut cut = this->generateCut();
         Matching match = this->generateMatching(cut, graph);
         this->bumpRound(match);
