@@ -43,10 +43,17 @@ int main(int argc, const char * argv[]) {
     Graph graph(fileBuffer);
     int originalNodeCount = graph.nodeCount();
     //graph.displayDOT();
-    graph.subdivideGraph();
+    bool SUBDIVIDE = false;
+    if (SUBDIVIDE) {
+        graph.subdivideGraph();
+        // initialize game, with index[nodes] being where the first split node starts and index[graph.nodeCount()] being right after the last split node
+        Game game(graph, originalNodeCount, graph.nodeCount(), phiInverse, randomVectorCount);
+        game.run();
+    } else {
+        // don't subdivide, so set all the original nodes as "active" (can be considered for the cut
+        Game game(graph, 0, graph.nodeCount(), phiInverse, randomVectorCount);
+        game.run();
+    }
     
-    // initialize game, with index[nodes] being where the first split node starts and index[graph.nodeCount()] being right after the last split node
-    Game game(graph, originalNodeCount, graph.nodeCount(), phiInverse, randomVectorCount);
-    game.run();
     return EXIT_SUCCESS;
 }

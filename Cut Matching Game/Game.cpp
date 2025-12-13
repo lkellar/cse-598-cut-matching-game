@@ -19,7 +19,7 @@ std::random_device dev;
 std::mt19937 gen(dev());
 std::uniform_real_distribution<double> dis(0, 1);
 
-Game::Game(const Graph& graph, int firstSplitNode, int pastSplitNode, int phiInverse, int randomVectorCount) : graph(graph), phiInverse(phiInverse), splitNodeCount(pastSplitNode - firstSplitNode), firstSplitNode(firstSplitNode), pastSplitNode(pastSplitNode),  randomVectorCount(randomVectorCount) {
+Game::Game(const Graph& graph, int firstActiveNode, int pastActiveNode, int phiInverse, int randomVectorCount) : graph(graph), phiInverse(phiInverse), activeNodeCount(pastActiveNode - firstActiveNode), firstActiveNode(firstActiveNode), pastActiveNode(pastActiveNode),  randomVectorCount(randomVectorCount) {
     if (randomVectorCount != -1) {
         std::cout << "Using at maximum " << randomVectorCount << " random vectors\n";
         randomVectorCache.reserve(randomVectorCount);
@@ -32,17 +32,17 @@ std::vector<double> Game::generateRandomVector() {
         return randomVectorCache[index];
     }
     std::vector<double> random_vector;
-    random_vector.resize(this->splitNodeCount);
+    random_vector.resize(this->activeNodeCount);
     
     double sum = 0;
-    for(int i = 0; i < splitNodeCount; ++i) {
+    for(int i = 0; i < this->activeNodeCount; ++i) {
         double next = dis(gen);
         random_vector[i] = next;
         sum += next * next;
     }
     
     double length = sqrt(sum);
-    for(int i = 0; i < this->splitNodeCount; ++i) {
+    for(int i = 0; i < this->activeNodeCount; ++i) {
         random_vector[i] /= length;
     }
     
@@ -60,10 +60,10 @@ std::vector<double> Game::computeProjection() {
     for (auto& matching : this->matchings) {
         for (auto& pair : matching) {
             // assert that all matchings are between split nodes
-            assert(firstSplitNode <= pair.first && pair.first < pastSplitNode);
-            assert(firstSplitNode <= pair.second && pair.second < pastSplitNode);
-            int shiftedFirst = pair.first - firstSplitNode;
-            int shiftedSecond = pair.second - firstSplitNode;
+            assert(firstActiveNode <= pair.first && pair.first < pastActiveNode);
+            assert(firstActiveNode <= pair.second && pair.second < pastActiveNode);
+            int shiftedFirst = pair.first - firstActiveNode;
+            int shiftedSecond = pair.second - firstActiveNode;
             // set both nodes in the matching to the average
             double avg = (random_vector[shiftedFirst] + random_vector[shiftedSecond]) / 2;
             random_vector[shiftedFirst] = avg;
@@ -91,21 +91,21 @@ std::pair<Subset, Subset> Game::generateCut() {
         return left.first < right.first;
     };
     
-    std::vector<std::pair<double, int>>::iterator median = pairedPosVector.begin() + this->splitNodeCount / 2;
+    std::vector<std::pair<double, int>>::iterator median = pairedPosVector.begin() + this->activeNodeCount / 2;
     
     // rearranges the array in O(n) time to get everything below the median in the first half of the array and everything equal to or above in the second half
     std::nth_element(pairedPosVector.begin(), median, pairedPosVector.end(), compare);
     
     Subset cut, notCut;
-    cut.reserve(this->splitNodeCount / 2);
+    cut.reserve(this->activeNodeCount / 2);
     // in case its odd
-    notCut.reserve((this->splitNodeCount / 2) + 1);
+    notCut.reserve((this->activeNodeCount / 2) + 1);
     
     for (auto it = pairedPosVector.begin(); it != pairedPosVector.end(); it++) {
         if (it < median) {
-            cut.push_back(it->second + this->firstSplitNode);
+            cut.push_back(it->second + this->firstActiveNode);
         } else {
-            notCut.push_back(it->second + this->firstSplitNode);
+            notCut.push_back(it->second + this->firstActiveNode);
         }
     }
     
@@ -115,7 +115,7 @@ std::pair<Subset, Subset> Game::generateCut() {
 Matching Game::generateMatching(const Cut& cut, Graph graph) {
     std::pair<int, int> sourceSink = graph.addSourceSink(cut);
     
-    int targetFlow = this->splitNodeCount / 2;
+    int targetFlow = this->activeNodeCount / 2;
     
     // target max flow should be n/2 where n is number of split nodes (so basically m/2)
     EdmondsKarpMaxFlow flow(graph, sourceSink.first, sourceSink.second, targetFlow, phiInverse);
@@ -126,7 +126,8 @@ Matching Game::generateMatching(const Cut& cut, Graph graph) {
     
     // explicitly flush
     std::cout << "Edmonds Karp Max Flow: " << maxFlow << " | Target was " << targetFlow << std::endl;
-    if (maxFlow * phiInverse < targetFlow) {
+    
+    if (maxFlow < targetFlow) {
         std::cout << "Found 1/" << phiInverse << " cut in graph. Quitting\n";
         std::cout << "Took " << this->matchings.size() + 1 << " rounds to find the cut\n";
         exit(0);
@@ -146,7 +147,8 @@ void Game::bumpRound(Matching matching) {
 }
 
 void Game::run() {
-    int originalNodeCount = static_cast<double>(firstSplitNode);
+    //int originalNodeCount = static_cast<double>(firstSplitNode);
+    int originalNodeCount = this->graph.nodeCount();
     int rounds = std::ceil(pow(std::log2(originalNodeCount), 2));
     if (rounds < 10) {
         std::cout << "Esimated Rounds: " << rounds << ". Using a minimum of 10 rounds\n";
