@@ -84,7 +84,7 @@ int EdmondsKarpMaxFlow::computeMaxFlow() {
         }
         
         assert(sourceConnect != -1 && sinkConnect != -1);
-        matching[sourceConnect] = sinkConnect;
+        matching[sinkConnect] = sourceConnect;
     }
     
     return flow;

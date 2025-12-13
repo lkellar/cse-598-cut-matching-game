@@ -27,10 +27,6 @@ Game::Game(const Graph& graph, int firstActiveNode, int pastActiveNode, int phiI
 }
 
 std::vector<double> Game::generateRandomVector() {
-    if (this->randomVectorCount != -1 && this->currentRound > this->randomVectorCount) {
-        int index = this->currentRound % this->randomVectorCount;
-        return randomVectorCache[index];
-    }
     std::vector<double> random_vector;
     random_vector.resize(this->activeNodeCount);
     
@@ -46,10 +42,6 @@ std::vector<double> Game::generateRandomVector() {
         random_vector[i] /= length;
     }
     
-    if (this->randomVectorCount != -1) {
-        this->randomVectorCache.push_back(random_vector);
-    }
-    
     return random_vector;
 }
 
@@ -58,24 +50,41 @@ std::vector<double> Game::computeProjection() {
     std::vector<double> random_vector = this->generateRandomVector();
     
     for (auto& matching : this->matchings) {
-        for (auto& pair : matching) {
-            // assert that all matchings are between split nodes
-            assert(firstActiveNode <= pair.first && pair.first < pastActiveNode);
-            assert(firstActiveNode <= pair.second && pair.second < pastActiveNode);
-            int shiftedFirst = pair.first - firstActiveNode;
-            int shiftedSecond = pair.second - firstActiveNode;
-            // set both nodes in the matching to the average
-            double avg = (random_vector[shiftedFirst] + random_vector[shiftedSecond]) / 2;
-            random_vector[shiftedFirst] = avg;
-            random_vector[shiftedSecond] = avg;
-        }
+        applyMatchingToVector(random_vector, matching);
     }
     
     return random_vector;
 }
 
+
+void Game::applyMatchingToVector(std::vector<double>& posVector, const Matching& match) {
+    for (auto& pair : match) {
+        // assert that all matchings are between split nodes
+        assert(firstActiveNode <= pair.first && pair.first < pastActiveNode);
+        assert(firstActiveNode <= pair.second && pair.second < pastActiveNode);
+        int shiftedFirst = pair.first - firstActiveNode;
+        int shiftedSecond = pair.second - firstActiveNode;
+        // set both nodes in the matching to the average
+        double avg = (posVector[shiftedFirst] + posVector[shiftedSecond]) / 2;
+        posVector[shiftedFirst] = avg;
+        posVector[shiftedSecond] = avg;
+    }
+}
+
+
+void Game::applyMatchingToCachedVectors(const Matching& match) {
+    for (auto& vec : this->randomVectorCache) {
+        applyMatchingToVector(vec, match);
+    }
+}
+
 std::pair<Subset, Subset> Game::generateCut() {
-    std::vector<double> posVector = this->computeProjection();
+    std::vector<double> posVector;
+    if (this->randomVectorCount != -1) {
+        posVector = this->randomVectorCache[this->currentRound % this->randomVectorCount];
+    } else {
+        posVector = this->computeProjection();
+    }
     
     // so we can keep track of position and node when we find median
     std::vector<std::pair<double, int>> pairedPosVector;
@@ -144,6 +153,9 @@ Matching Game::generateMatching(const Cut& cut, Graph graph) {
 void Game::bumpRound(Matching matching) {
     this->matchings.push_back(matching);
     this->currentRound++;
+    if (this->randomVectorCount != -1) {
+        applyMatchingToCachedVectors(matching);
+    }
 }
 
 void Game::run() {
@@ -155,6 +167,13 @@ void Game::run() {
         rounds = 10;
     } else {
         std::cout << "Estimated Rounds: " << rounds << "\n";
+    }
+    // generate random vectors ahead of time. could be done on demand as well
+    if (this->randomVectorCount != -1) {
+        this->randomVectorCache.reserve(this->randomVectorCount);
+        for (int index = 0; index < this->randomVectorCount; index++) {
+            this->randomVectorCache.push_back(this->computeProjection());
+        }
     }
     for (int i = 0; i < rounds; i++) {
         Cut cut = this->generateCut();

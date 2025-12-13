@@ -38,8 +38,8 @@ public:
     // return {source,sink} node ids
     std::pair<int, int> addSourceSink(const Cut& cut);
     void display() const;
-    // output in graphviz DOT format
-    void displayDOT() const;
+    // output in graphviz DOT format, if subset provided, color them a different color
+    void displayDOT(const Subset& subset = {}) const;
     int nodeCount() const;
 private:
     std::vector<std::vector<Edge>> adjacencyList;

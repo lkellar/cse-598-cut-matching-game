@@ -137,8 +137,11 @@ void Graph::display() const {
     }
 }
 
-void Graph::displayDOT() const {
+void Graph::displayDOT(const Subset& subset) const {
     std::cout << "graph {\n";
+    for (int node : subset) {
+        std::cout << node << " [color=red, fontcolor=red];\n";
+    }
     for (int index = 0; index < this->nodeCount(); index++) {
         for (Edge neighbor : this->adjacencyList[index]) {
             // since we're working with undirected graphs, only output each edge once

@@ -33,6 +33,9 @@ private:
     // represents how many randomVectors we should store
     // if -1, keep them forever
     const int randomVectorCount;
+    // apply the matching to the cached vectors
+    void applyMatchingToCachedVectors(const Matching& match);
+    void applyMatchingToVector(std::vector<double>& posVector, const Matching& match);
     std::vector<std::vector<double>> randomVectorCache;
     std::vector<double> computeProjection();
     std::vector<double> generateRandomVector();

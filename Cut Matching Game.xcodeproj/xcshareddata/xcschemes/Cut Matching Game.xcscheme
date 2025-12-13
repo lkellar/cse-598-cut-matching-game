@@ -62,12 +62,12 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "100 graphs/barbells/barbell_400.graph"
-            isEnabled = "YES">
+            argument = "2 graphs/barbells/barbell_40.graph"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "100 /Users/lucas/Downloads/walshaw/graphs/uk.graph"
-            isEnabled = "NO">
+            argument = "100 /Users/lucas/Downloads/walshaw/graphs/uk.graph 5"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "2 /Users/lucas/Downloads/luxembourg.osm.graph"
