@@ -21,3 +21,5 @@ The program accepts the following arguments:
 - `#randomVectors`: OPTIONAL. If set, no more than `#randomVectors` random vectors will be generated. If the number of rounds exceeds `#randomVectors`, previously generated random vectors will be used in the same order.
 
 The program will run up to $(\log(n))^2$ iterations (or $10$ if $(\log(n))^2 < 10$) and will stop if a cut is found.
+
+Additionally, a number of scritps exist in the `scripts/` folder like `run_iteration.sh` and `extract_rounds.py` that may be useful to running large batches of tests. There also exist many scripts to construct graphs for testing.

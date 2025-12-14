@@ -163,7 +163,7 @@ void Game::run() {
     int originalNodeCount = this->graph.nodeCount();
     int rounds = std::ceil(pow(std::log2(originalNodeCount), 2));
     if (rounds < 10) {
-        std::cout << "Esimated Rounds: " << rounds << ". Using a minimum of 10 rounds\n";
+        std::cout << "Estimated Rounds: " << rounds << ". Using a minimum of 10 rounds\n";
         rounds = 10;
     } else {
         std::cout << "Estimated Rounds: " << rounds << "\n";
