@@ -1,6 +1,6 @@
 # Cut Matching Game Implementation
 
-An implementation of the [cut matching game](https://people.eecs.berkeley.edu/~vazirani/pubs/partitioning.pdf). Put simply, given an $\phi$ and a graph, the goal is to either find a $\phi$-cut in the graph or certify it as a $\phi$-expander (no $\phi$-cut exists). 
+An implementation of the [cut matching game](https://people.eecs.berkeley.edu/~vazirani/pubs/partitioning.pdf). Put simply, given an $\phi$ and a graph, the goal is to either find a $\phi$-sparse cut in the graph or certify it as a $\phi$-expander (no $\phi$-sparse cut exists). 
 
 Additionally, this implementation aims to test if generating a new random vector for each round is necessary. You can set a maximum number of random vectors to be generated with a command line option (after that, previous generated vectors will be reused).
 
