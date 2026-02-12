@@ -6,6 +6,8 @@ Additionally, this implementation aims to test if generating a new random vector
 
 Written in pure C++. Currently uses an implementation of the [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds–Karp_algorithm) for max flow. There's also a draft of [Push-Relabel](https://en.wikipedia.org/wiki/Push–relabel_maximum_flow_algorithm) (with the current-arc variation) that partially works, but is too slow to be used at the present.
 
+For more details, please see my [report](https://lkellar.org/about/kellar_cut_matching.pdf).
+
 ## Build
 
 You should just be able to clone the repo and run `scripts/build.sh` (run in the root directory). This should produce an executable called `cmg`. If you're looking to debug or configure it more, try opening / using the attached XCode project.
